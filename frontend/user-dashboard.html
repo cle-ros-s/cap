@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Dashboard - Government Scheme Recommendation System</title>
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom Design Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-gov">
+        <div class="container">
+            <a class="brand-logo" href="index.html">
+                <div class="brand-icon"><i class="bi bi-bank2"></i></div>
+                <div>GovScheme</div>
+            </a>
+            <div id="nav-auth-section" class="d-flex align-items-center gap-2"></div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SECTION -->
+    <section class="py-5">
+        <div class="container">
+            <!-- Welcome Banner & Quick Counters -->
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="card gov-card p-4 bg-primary text-white position-relative overflow-hidden">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <div>
+                                <h3 class="fw-bold mb-1" id="dash-welcome">Welcome, Citizen</h3>
+                                <p class="mb-0 text-white-50">Manage your profile metrics and monitor recommended government welfare schemes.</p>
+                            </div>
+                            <a href="recommendations.html" class="btn btn-light fw-bold text-primary"><i class="bi bi-cpu me-1"></i> Check Eligibility</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-award-fill"></i></div>
+                        <div>
+                            <div class="stat-number text-success" id="dash-eligible-count">0</div>
+                            <div class="stat-label">Eligible Schemes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-bookmark-fill"></i></div>
+                        <div>
+                            <div class="stat-number text-primary" id="dash-saved-count">0</div>
+                            <div class="stat-label">Saved Schemes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-pie-chart-fill"></i></div>
+                        <div>
+                            <div class="stat-number text-warning" id="dash-completion">0%</div>
+                            <div class="stat-label">Profile Completion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Editor & Saved Schemes Tabs -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card gov-card p-4">
+                        <h4 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i>Update Profile Parameters</h4>
+                        <form id="userProfileForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Age</label>
+                                    <input type="number" id="dash-age" class="form-control form-control-gov" placeholder="22">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Gender</label>
+                                    <select id="dash-gender" class="form-select form-control-gov">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">State</label>
+                                    <select id="dash-state" class="form-select form-control-gov">
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="ALL">All India</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">District</label>
+                                    <input type="text" id="dash-district" class="form-control form-control-gov" placeholder="Chennai">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Annual Income (₹)</label>
+                                    <input type="number" id="dash-income" class="form-control form-control-gov" placeholder="180000">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Occupation</label>
+                                    <select id="dash-occupation" class="form-select form-control-gov">
+                                        <option value="Student">Student</option>
+                                        <option value="Farmer">Farmer</option>
+                                        <option value="Self-Employed">Self-Employed</option>
+                                        <option value="Unemployed">Unemployed</option>
+                                        <option value="Salaried">Salaried</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Category</label>
+                                    <select id="dash-category" class="form-select form-control-gov">
+                                        <option value="General">General</option>
+                                        <option value="BC">BC</option>
+                                        <option value="OBC">OBC</option>
+                                        <option value="SC">SC</option>
+                                        <option value="ST">ST</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Employment Status</label>
+                                    <select id="dash-employment" class="form-select form-control-gov">
+                                        <option value="Student">Student</option>
+                                        <option value="Unemployed">Unemployed</option>
+                                        <option value="Self-Employed">Self-Employed</option>
+                                        <option value="Employed">Employed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="dash-student">
+                                    <label class="form-check-label small fw-semibold" for="dash-student">Active Student</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="dash-farmer">
+                                    <label class="form-check-label small fw-semibold" for="dash-farmer">Landholding Farmer</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-gov-primary mt-3 w-100"><i class="bi bi-save me-1"></i> Save Profile Details</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card gov-card p-4">
+                        <h4 class="fw-bold mb-3"><i class="bi bi-bookmarks-fill text-primary me-2"></i>My Saved Schemes</h4>
+                        <div id="saved-schemes-list" class="d-flex flex-column gap-3">
+                            <div class="text-center py-4 text-muted">Loading saved schemes...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-gov">
+        <div class="container text-center small text-muted">
+            &copy; 2026 Government Scheme Recommendation System
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            loadDashboardData();
+
+            document.getElementById('userProfileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payload = {
+                    age: parseInt(document.getElementById('dash-age').value, 10) || null,
+                    gender: document.getElementById('dash-gender').value,
+                    state: document.getElementById('dash-state').value,
+                    district: document.getElementById('dash-district').value.trim(),
+                    annualIncome: parseFloat(document.getElementById('dash-income').value) || null,
+                    occupation: document.getElementById('dash-occupation').value,
+                    category: document.getElementById('dash-category').value,
+                    employmentStatus: document.getElementById('dash-employment').value,
+                    studentStatus: document.getElementById('dash-student').checked,
+                    farmerStatus: document.getElementById('dash-farmer').checked
+                };
+
+                try {
+                    await apiFetch('/user/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                    showToast('Profile updated successfully!', 'success');
+                    loadDashboardData();
+                } catch (err) {
+                    showToast(err.message || 'Update failed', 'error');
+                }
+            });
+        });
+
+        async function loadDashboardData() {
+            try {
+                const data = await apiFetch('/user/dashboard');
+                document.getElementById('dash-welcome').innerText = `Welcome, ${data.userName}`;
+                document.getElementById('dash-eligible-count').innerText = data.eligibleSchemesCount || 0;
+                document.getElementById('dash-saved-count').innerText = data.savedSchemesCount || 0;
+                document.getElementById('dash-completion').innerText = `${data.profileCompletionPercentage || 0}%`;
+
+                if (data.profile) {
+                    const p = data.profile;
+                    if (p.age) document.getElementById('dash-age').value = p.age;
+                    if (p.gender) document.getElementById('dash-gender').value = p.gender;
+                    if (p.state) document.getElementById('dash-state').value = p.state;
+                    if (p.district) document.getElementById('dash-district').value = p.district;
+                    if (p.annualIncome) document.getElementById('dash-income').value = p.annualIncome;
+                    if (p.occupation) document.getElementById('dash-occupation').value = p.occupation;
+                    if (p.category) document.getElementById('dash-category').value = p.category;
+                    if (p.employmentStatus) document.getElementById('dash-employment').value = p.employmentStatus;
+                    document.getElementById('dash-student').checked = Boolean(p.studentStatus);
+                    document.getElementById('dash-farmer').checked = Boolean(p.farmerStatus);
+                }
+
+                const savedList = document.getElementById('saved-schemes-list');
+                if (data.savedSchemes && data.savedSchemes.length > 0) {
+                    savedList.innerHTML = data.savedSchemes.map(s => `
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="badge-category mb-1">${s.categoryName}</span>
+                                    <h6 class="fw-bold m-0">${s.schemeName}</h6>
+                                    <div class="small text-muted">${s.department}</div>
+                                </div>
+                                <a href="scheme-detail.html?id=${s.id}" class="btn btn-sm btn-gov-primary"><i class="bi bi-eye"></i> Details</a>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    savedList.innerHTML = `<p class="text-muted text-center py-4">No saved schemes yet. Bookmark schemes while checking eligibility!</p>`;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Scheme Recommendation System - Rule-Based Citizen Portal</title>
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom Design Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-gov">
+        <div class="container">
+            <a class="brand-logo" href="index.html">
+                <div class="brand-icon"><i class="bi bi-bank2"></i></div>
+                <div>
+                    <div>GovScheme</div>
+                    <div style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; color: var(--accent); letter-spacing: 0.1em;">Rule-Based Eligibility Engine</div>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="schemes.html">Browse Schemes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="recommendations.html">Check Eligibility</a></li>
+                </ul>
+                <div id="nav-auth-section" class="d-flex align-items-center gap-2">
+                    <!-- Loaded dynamically by app.js -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="container position-relative" style="z-index: 2;">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <div class="hero-badge">
+                        <i class="bi bi-shield-check-fill text-warning"></i> 100% Deterministic & Rule-Based Matching Engine
+                    </div>
+                    <h1 class="hero-title">Discover Government Schemes You Are Eligible For</h1>
+                    <p class="hero-subtitle">
+                        Enter your personal profile metrics (age, income, occupation, category, state) to immediately evaluate your eligibility against transparent database rules with complete explanation breakdowns.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="recommendations.html" class="btn btn-gov-primary btn-lg">
+                            <i class="bi bi-cpu me-2"></i> Check My Eligibility Now
+                        </a>
+                        <a href="schemes.html" class="btn btn-outline-light btn-lg fw-semibold">
+                            <i class="bi bi-search me-2"></i> Browse All Schemes
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 mt-5 mt-lg-0 text-center">
+                    <div class="bg-white bg-opacity-10 p-4 rounded-4 backdrop-blur border border-white border-opacity-25 shadow-lg text-start">
+                        <h5 class="fw-bold text-white mb-3"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>How Eligibility Matching Works</h5>
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:36px; height:36px; font-weight:700;">1</div>
+                            <div>
+                                <h6 class="fw-bold text-white mb-0">Create Citizen Profile</h6>
+                                <p class="text-white-50 small mb-0">Specify age, income, state, student/farmer/business status.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 mb-3">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:36px; height:36px; font-weight:700;">2</div>
+                            <div>
+                                <h6 class="fw-bold text-white mb-0">Rule Engine Comparison</h6>
+                                <p class="text-white-50 small mb-0">Compares profile against database eligibility rules.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:36px; height:36px; font-weight:700;">3</div>
+                            <div>
+                                <h6 class="fw-bold text-white mb-0">Transparent Explanation</h6>
+                                <p class="text-white-50 small mb-0">Displays matched criteria (✓) and unmet criteria (✗).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- POPULAR CATEGORIES SECTION -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge-category mb-2">Explore Opportunities</span>
+                <h2 class="fw-bold">Browse Schemes by Sector</h2>
+                <p class="text-muted">Targeted welfare programs for students, farmers, entrepreneurs, and families.</p>
+            </div>
+            <div class="row g-4" id="categories-grid">
+                <!-- Categories loaded via API -->
+                <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED SCHEMES SECTION -->
+    <section class="py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <span class="badge-category mb-2">Active Programs</span>
+                    <h2 class="fw-bold m-0">Popular Government Schemes</h2>
+                </div>
+                <a href="schemes.html" class="btn btn-gov-outline">View All Schemes <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+            <div class="row g-4" id="featured-schemes-grid">
+                <!-- Schemes loaded via API -->
+                <div class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-gov">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-5">
+                    <div class="brand-logo mb-3 text-white">
+                        <div class="brand-icon"><i class="bi bi-bank2"></i></div>
+                        <div>GovScheme Portal</div>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        A centralized, rule-based government scheme discovery platform helping citizens locate welfare schemes for which they meet exact eligibility requirements.
+                    </p>
+                    <p class="small text-secondary mb-0">
+                        <i class="bi bi-info-circle me-1"></i> <strong>Disclaimer:</strong> This is a public scheme discovery platform. Information is compiled for citizen awareness and rule evaluation.
+                    </p>
+                </div>
+                <div class="col-lg-3 offset-lg-1">
+                    <h6 class="fw-bold text-white mb-3">Quick Navigation</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="index.html"><i class="bi bi-chevron-right me-1"></i> Home</a></li>
+                        <li><a href="schemes.html"><i class="bi bi-chevron-right me-1"></i> All Schemes</a></li>
+                        <li><a href="recommendations.html"><i class="bi bi-chevron-right me-1"></i> Check Eligibility</a></li>
+                        <li><a href="login.html"><i class="bi bi-chevron-right me-1"></i> Citizen Login</a></li>
+                        <li><a href="register.html"><i class="bi bi-chevron-right me-1"></i> Register Account</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="fw-bold text-white mb-3">Administrator Access</h6>
+                    <p class="small text-muted mb-2">Administrators can configure schemes, edit eligibility rules, and manage users.</p>
+                    <a href="login.html" class="btn btn-sm btn-outline-light"><i class="bi bi-shield-lock me-1"></i> Admin Sign In</a>
+                </div>
+            </div>
+            <div class="border-top border-secondary pt-3 text-center small text-muted">
+                &copy; 2026 Government Scheme Recommendation System | Rule-Based Architecture
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load Categories
+            try {
+                const categories = await apiFetch('/schemes/categories');
+                const catGrid = document.getElementById('categories-grid');
+                if (catGrid) {
+                    catGrid.innerHTML = categories.map(c => `
+                        <div class="col-md-4 col-lg-3">
+                            <a href="schemes.html?category=${c.id}" class="card gov-card text-center p-4 text-decoration-none">
+                                <div class="mx-auto mb-3 bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 1.6rem;">
+                                    <i class="bi ${c.iconName || 'bi-folder'}"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-1">${c.name}</h5>
+                                <p class="text-muted small mb-0">${c.description || 'Explore available welfare schemes'}</p>
+                            </a>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed categories:', err);
+            }
+
+            // Load Featured Schemes
+            try {
+                const schemes = await apiFetch('/schemes');
+                const schemeGrid = document.getElementById('featured-schemes-grid');
+                if (schemeGrid) {
+                    schemeGrid.innerHTML = schemes.slice(0, 3).map(s => `
+                        <div class="col-md-4">
+                            <div class="card gov-card">
+                                <div class="gov-card-body">
+                                    <span class="badge-category mb-2">${s.categoryName}</span>
+                                    <span class="${s.schemeType === 'STATE' ? 'badge-state' : 'badge-central'} ms-1">${s.schemeType}</span>
+                                    <h5 class="fw-bold mt-2 mb-2 text-dark">${s.schemeName}</h5>
+                                    <p class="text-muted small mb-3 text-truncate-2">${s.shortDescription}</p>
+                                    <div class="bg-light p-2 rounded mb-3 border small">
+                                        <i class="bi bi-building me-1 text-primary"></i> ${s.department}
+                                    </div>
+                                </div>
+                                <div class="gov-card-footer d-flex justify-content-between align-items-center">
+                                    <a href="scheme-detail.html?id=${s.id}" class="btn btn-gov-primary btn-sm">View Details</a>
+                                    <a href="recommendations.html?schemeId=${s.id}" class="btn btn-gov-outline btn-sm">Check Eligibility</a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed schemes:', err);
+            }
+        });
+    </script>
+</body>
+</html>
