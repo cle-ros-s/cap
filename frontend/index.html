@@ -89,6 +89,75 @@
         </div>
     </section>
 
+    <!-- STATE-WISE SCHEME QUICK FINDER -->
+    <section class="py-4" style="margin-top: -36px; position: relative; z-index: 10;">
+        <div class="container">
+            <div class="card p-4 shadow-lg border-0 rounded-4" style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-top: 4px solid var(--accent) !important;">
+                <div class="row align-items-center g-3">
+                    <div class="col-lg-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 52px; height: 52px;">
+                                <i class="bi bi-geo-alt-fill fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1 text-dark">Find Schemes by Your State</h5>
+                                <p class="text-muted small mb-0">Combines Central Govt Schemes + Your State's exclusive schemes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-compass text-primary"></i></span>
+                            <select id="homeStateSelect" class="form-select form-control-gov border-start-0 fw-semibold">
+                                <option value="" disabled selected>-- Select Your State of Residence --</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Delhi">Delhi (NCT)</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Assam">Assam</option>
+                                <option value="ALL">All India (All States)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 d-flex gap-2">
+                        <button type="button" id="homeExploreStateBtn" class="btn btn-gov-primary w-100 py-2 fw-semibold">
+                            <i class="bi bi-search me-1"></i> View Schemes
+                        </button>
+                        <button type="button" id="homeCheckStateBtn" class="btn btn-gov-outline w-100 py-2 fw-semibold" title="Check Eligibility for this State">
+                            <i class="bi bi-cpu me-1"></i> Check
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Popular State Quick Chips -->
+                <div class="mt-3 pt-3 border-top d-flex align-items-center flex-wrap gap-2 small">
+                    <span class="text-muted fw-semibold me-1"><i class="bi bi-lightning-charge-fill text-warning me-1"></i>Quick Select:</span>
+                    <a href="schemes.html?state=Tamil%20Nadu" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Tamil Nadu</a>
+                    <a href="schemes.html?state=Maharashtra" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Maharashtra</a>
+                    <a href="schemes.html?state=Karnataka" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Karnataka</a>
+                    <a href="schemes.html?state=Uttar%20Pradesh" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Uttar Pradesh</a>
+                    <a href="schemes.html?state=Kerala" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Kerala</a>
+                    <a href="schemes.html?state=West%20Bengal" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">West Bengal</a>
+                    <a href="schemes.html?state=Delhi" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Delhi</a>
+                    <a href="schemes.html?state=Gujarat" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Gujarat</a>
+                    <a href="schemes.html?state=Andhra%20Pradesh" class="badge rounded-pill bg-light text-dark border px-3 py-2 text-decoration-none">Andhra Pradesh</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- POPULAR CATEGORIES SECTION -->
     <section class="py-5 bg-light">
         <div class="container">
@@ -217,6 +286,25 @@
             } catch (err) {
                 console.error('Failed schemes:', err);
             }
+
+            // Wire up State Finder Buttons
+            document.getElementById('homeExploreStateBtn')?.addEventListener('click', () => {
+                const st = document.getElementById('homeStateSelect').value;
+                if (st && st !== 'ALL') {
+                    window.location.href = `schemes.html?state=${encodeURIComponent(st)}`;
+                } else {
+                    window.location.href = `schemes.html`;
+                }
+            });
+
+            document.getElementById('homeCheckStateBtn')?.addEventListener('click', () => {
+                const st = document.getElementById('homeStateSelect').value;
+                if (st && st !== 'ALL') {
+                    window.location.href = `recommendations.html?state=${encodeURIComponent(st)}`;
+                } else {
+                    window.location.href = `recommendations.html`;
+                }
+            });
         });
     </script>
 </body>

@@ -78,6 +78,14 @@
                         <h4 class="fw-bold mb-3"><i class="bi bi-person-lines-fill text-primary me-2"></i>Update Profile Parameters</h4>
                         <form id="userProfileForm">
                             <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small">Aadhaar Card Number (e-KYC)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white"><i class="bi bi-person-vcard text-primary"></i></span>
+                                        <input type="text" id="dash-aadhaar" class="form-control form-control-gov font-monospace" placeholder="•••• •••• ••••" readonly>
+                                        <span class="input-group-text bg-success-subtle text-success fw-bold small"><i class="bi bi-patch-check-fill me-1"></i>e-KYC Verified</span>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small">Age</label>
                                     <input type="number" id="dash-age" class="form-control form-control-gov" placeholder="22">
@@ -115,7 +123,9 @@
                                     <select id="dash-occupation" class="form-select form-control-gov">
                                         <option value="Student">Student</option>
                                         <option value="Farmer">Farmer</option>
-                                        <option value="Self-Employed">Self-Employed</option>
+                                        <option value="Self-Employed">Self-Employed / Business</option>
+                                        <option value="Entrepreneur">Startup Founder / Entrepreneur</option>
+                                        <option value="Senior Citizen">Senior Citizen / Retired</option>
                                         <option value="Unemployed">Unemployed</option>
                                         <option value="Salaried">Salaried</option>
                                     </select>
@@ -128,27 +138,45 @@
                                         <option value="OBC">OBC</option>
                                         <option value="SC">SC</option>
                                         <option value="ST">ST</option>
+                                        <option value="EWS">EWS</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small">Employment Status</label>
                                     <select id="dash-employment" class="form-select form-control-gov">
                                         <option value="Student">Student</option>
-                                        <option value="Unemployed">Unemployed</option>
                                         <option value="Self-Employed">Self-Employed</option>
                                         <option value="Employed">Employed</option>
+                                        <option value="Retired">Retired / Senior Citizen</option>
+                                        <option value="Unemployed">Unemployed</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="mt-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="dash-student">
-                                    <label class="form-check-label small fw-semibold" for="dash-student">Active Student</label>
+                            <div class="row g-2 mt-3">
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="dash-student">
+                                        <label class="form-check-label small fw-semibold" for="dash-student">Active Student</label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="dash-farmer">
-                                    <label class="form-check-label small fw-semibold" for="dash-farmer">Landholding Farmer</label>
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="dash-farmer">
+                                        <label class="form-check-label small fw-semibold" for="dash-farmer">Landholding Farmer</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="dash-entrepreneur">
+                                        <label class="form-check-label small fw-semibold" for="dash-entrepreneur">Startup / Entrepreneur</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="dash-disability">
+                                        <label class="form-check-label small fw-semibold" for="dash-disability">Person with Disability</label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -200,7 +228,9 @@
                     category: document.getElementById('dash-category').value,
                     employmentStatus: document.getElementById('dash-employment').value,
                     studentStatus: document.getElementById('dash-student').checked,
-                    farmerStatus: document.getElementById('dash-farmer').checked
+                    farmerStatus: document.getElementById('dash-farmer').checked,
+                    entrepreneurStatus: document.getElementById('dash-entrepreneur').checked,
+                    disabilityStatus: document.getElementById('dash-disability').checked
                 };
 
                 try {
@@ -234,8 +264,16 @@
                     if (p.occupation) document.getElementById('dash-occupation').value = p.occupation;
                     if (p.category) document.getElementById('dash-category').value = p.category;
                     if (p.employmentStatus) document.getElementById('dash-employment').value = p.employmentStatus;
+                    if (p.aadhaarNumber) {
+                        const raw = p.aadhaarNumber.replace(/\s+/g, '');
+                        document.getElementById('dash-aadhaar').value = raw.length === 12 
+                            ? `${raw.substring(0, 4)} ${raw.substring(4, 8)} ${raw.substring(8, 12)}` 
+                            : raw;
+                    }
                     document.getElementById('dash-student').checked = Boolean(p.studentStatus);
                     document.getElementById('dash-farmer').checked = Boolean(p.farmerStatus);
+                    document.getElementById('dash-entrepreneur').checked = Boolean(p.entrepreneurStatus);
+                    document.getElementById('dash-disability').checked = Boolean(p.disabilityStatus);
                 }
 
                 const savedList = document.getElementById('saved-schemes-list');

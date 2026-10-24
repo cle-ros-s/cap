@@ -64,19 +64,35 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="state" class="form-label font-weight-bold fw-bold small">State of Residence</label>
-                                <select id="state" class="form-select form-control-gov" required>
-                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                            <div class="mb-3 p-3 bg-light rounded border border-primary-subtle">
+                                <label for="state" class="form-label font-weight-bold fw-bold text-primary small d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-geo-alt-fill me-1"></i>State of Residence *</span>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Matches Central + State</span>
+                                </label>
+                                <select id="state" class="form-select form-control-gov border-primary fw-semibold" required>
+                                    <option value="" disabled>-- Select Your State --</option>
+                                    <option value="Tamil Nadu" selected>Tamil Nadu</option>
                                     <option value="Maharashtra">Maharashtra</option>
                                     <option value="Karnataka">Karnataka</option>
-                                    <option value="Delhi">Delhi</option>
                                     <option value="Uttar Pradesh">Uttar Pradesh</option>
                                     <option value="Kerala">Kerala</option>
                                     <option value="West Bengal">West Bengal</option>
+                                    <option value="Delhi">Delhi (NCT)</option>
                                     <option value="Gujarat">Gujarat</option>
-                                    <option value="ALL">All India Resident</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="ALL">All India (All States)</option>
                                 </select>
+                                <div class="form-text small text-muted mt-1">
+                                    <i class="bi bi-info-circle me-1 text-primary"></i> Selecting your state displays all <strong>Central Government</strong> schemes plus welfare schemes exclusive to your <strong>selected State</strong>.
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -95,6 +111,8 @@
                                     <option value="Student">Student</option>
                                     <option value="Farmer">Farmer / Agriculture</option>
                                     <option value="Self-Employed">Self-Employed / Business</option>
+                                    <option value="Entrepreneur">Startup Founder / Entrepreneur</option>
+                                    <option value="Senior Citizen">Senior Citizen / Retired</option>
                                     <option value="Unemployed">Unemployed Youth</option>
                                     <option value="Salaried">Private / Govt Salaried</option>
                                 </select>
@@ -116,9 +134,10 @@
                                 <label for="employmentStatus" class="form-label font-weight-bold fw-bold small">Employment Status</label>
                                 <select id="employmentStatus" class="form-select form-control-gov">
                                     <option value="Student">Student</option>
-                                    <option value="Unemployed">Unemployed</option>
-                                    <option value="Self-Employed">Self-Employed</option>
+                                    <option value="Self-Employed">Self-Employed / Business</option>
                                     <option value="Employed">Employed</option>
+                                    <option value="Retired">Retired / Senior Citizen</option>
+                                    <option value="Unemployed">Unemployed</option>
                                 </select>
                             </div>
 

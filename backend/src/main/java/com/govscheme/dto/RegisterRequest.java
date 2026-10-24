@@ -24,4 +24,9 @@ public class RegisterRequest {
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
+
+    @Pattern(regexp = "^$|^[0-9]{12}$", message = "Aadhaar number must be a valid 12-digit number")
+    private String aadhaarNumber;
+
+    private Boolean aadhaarVerified;
 }

@@ -34,6 +34,27 @@ public class RecommendationServiceImpl implements RecommendationService {
     @Transactional(readOnly = true)
     public List<EligibilityEvaluationResult> evaluateProfile(RecommendationRequestDto profile, String currentUserEmail) {
         List<Scheme> activeSchemes = schemeRepository.findByStatus(Status.ACTIVE);
+
+        // If user specified a specific state (not 'ALL' or 'All India'), filter to only include:
+        // 1. Central Government Schemes (open to all states)
+        // 2. State Government Schemes matching the user's specific state
+        // Schemes of other states are excluded.
+        if (profile != null && profile.getState() != null && !profile.getState().isBlank() 
+                && !"ALL".equalsIgnoreCase(profile.getState().trim()) 
+                && !"All India".equalsIgnoreCase(profile.getState().trim())) {
+            final String userState = profile.getState().trim();
+            activeSchemes = activeSchemes.stream()
+                    .filter(s -> {
+                        EligibilityRule rule = s.getEligibilityRule();
+                        boolean isCentral = "CENTRAL".equalsIgnoreCase(s.getSchemeType()) ||
+                                rule == null ||
+                                rule.getState() == null ||
+                                "ALL".equalsIgnoreCase(rule.getState());
+                        boolean isMatchingState = rule != null && rule.getState() != null && rule.getState().equalsIgnoreCase(userState);
+                        return isCentral || isMatchingState;
+                    })
+                    .collect(Collectors.toList());
+        }
         
         Long userId = null;
         if (currentUserEmail != null) {

@@ -41,12 +41,35 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label for="password" class="form-label fw-bold small">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
                                 <input type="password" id="password" class="form-control form-control-gov" placeholder="••••••••" required>
                             </div>
+                        </div>
+
+                        <!-- Secure Password Encryption & HTTPS Assurance Banner -->
+                        <div class="p-3 mb-4 rounded-3 border bg-light text-start">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge rounded-pill bg-success p-1"><i class="bi bi-shield-check text-white"></i></span>
+                                    <span class="fw-bold small text-dark">Secure Password Encryption</span>
+                                </div>
+                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none fw-semibold small" onclick="openBackendSecurityModal()">
+                                    <i class="bi bi-gear-fill me-1"></i>Backend / HTTPS
+                                </button>
+                            </div>
+                            <ul class="list-unstyled mb-0 small text-muted" style="font-size: 12px;">
+                                <li class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="bi bi-lock-fill text-primary"></i>
+                                    <span><strong>In-Transit:</strong> Encrypted via HTTPS/TLS from frontend to backend.</span>
+                                </li>
+                                <li class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-database-fill-check text-success"></i>
+                                    <span><strong>In-Database:</strong> BCrypt salt hashed (plain text passwords never stored).</span>
+                                </li>
+                            </ul>
                         </div>
 
                         <button type="submit" class="btn btn-gov-primary w-100 py-2 fs-6">Sign In</button>

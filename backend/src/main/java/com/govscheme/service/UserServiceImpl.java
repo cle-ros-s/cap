@@ -61,10 +61,23 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Mobile number is already registered!");
         }
 
+        String rawAadhaar = request.getAadhaarNumber();
+        String cleanAadhaar = (rawAadhaar != null && !rawAadhaar.trim().isEmpty())
+                ? rawAadhaar.replaceAll("\\s+", "")
+                : null;
+
+        if (cleanAadhaar != null && !cleanAadhaar.isBlank()) {
+            if (userRepository.existsByAadhaarNumber(cleanAadhaar)) {
+                throw new BadRequestException("Aadhaar number is already registered!");
+            }
+        }
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .mobile(request.getMobile())
+                .aadhaarNumber(cleanAadhaar)
+                .aadhaarVerified(Boolean.TRUE.equals(request.getAadhaarVerified()))
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ROLE_USER)
                 .status(Status.ACTIVE)
@@ -75,6 +88,7 @@ public class UserServiceImpl implements UserService {
         // Create empty profile linked to user
         UserProfile profile = UserProfile.builder()
                 .user(user)
+                .aadhaarNumber(cleanAadhaar)
                 .studentStatus(false)
                 .disabilityStatus(false)
                 .farmerStatus(false)
@@ -177,6 +191,16 @@ public class UserServiceImpl implements UserService {
         profile.setFarmerStatus(Boolean.TRUE.equals(profileDto.getFarmerStatus()));
         profile.setEntrepreneurStatus(Boolean.TRUE.equals(profileDto.getEntrepreneurStatus()));
 
+        if (profileDto.getAadhaarNumber() != null && !profileDto.getAadhaarNumber().trim().isEmpty()) {
+            String cleanAadhaar = profileDto.getAadhaarNumber().replaceAll("\\s+", "");
+            profile.setAadhaarNumber(cleanAadhaar);
+            user.setAadhaarNumber(cleanAadhaar);
+            if (Boolean.TRUE.equals(profileDto.getAadhaarVerified())) {
+                user.setAadhaarVerified(true);
+            }
+            userRepository.save(user);
+        }
+
         profile = userProfileRepository.save(profile);
 
         return mapToProfileDto(user, profile);
@@ -193,6 +217,8 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .mobile(user.getMobile())
+                .aadhaarNumber(user.getAadhaarNumber())
+                .aadhaarVerified(user.getAadhaarVerified())
                 .role(user.getRole().name())
                 .status(user.getStatus().name())
                 .createdAt(user.getCreatedAt())
@@ -257,6 +283,8 @@ public class UserServiceImpl implements UserService {
                 .disabilityStatus(profile.getDisabilityStatus())
                 .farmerStatus(profile.getFarmerStatus())
                 .entrepreneurStatus(profile.getEntrepreneurStatus())
+                .aadhaarNumber(user.getAadhaarNumber() != null ? user.getAadhaarNumber() : profile.getAadhaarNumber())
+                .aadhaarVerified(user.getAadhaarVerified())
                 .profileCompletionPercentage(percentage)
                 .build();
     }

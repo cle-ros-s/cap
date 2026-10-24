@@ -95,9 +95,16 @@
                         <!-- Main Details Column -->
                         <div class="col-lg-8">
                             <div class="card gov-card p-4 mb-4">
-                                <div class="d-flex align-items-center gap-2 mb-3">
+                                <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
                                     <span class="badge-category">${scheme.categoryName}</span>
-                                    <span class="${scheme.schemeType === 'STATE' ? 'badge-state' : 'badge-central'}">${scheme.schemeType} SCHEME</span>
+                                    ${scheme.schemeType === 'STATE' ? `
+                                        <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-geo-alt-fill me-1"></i>${scheme.state || 'State'} Govt Scheme</span>
+                                    ` : `
+                                        <span class="badge bg-primary px-2 py-1"><i class="bi bi-flag-fill me-1"></i>Central Govt Scheme</span>
+                                    `}
+                                    <span class="badge bg-light text-secondary border">
+                                        <i class="bi bi-geo me-1"></i> ${scheme.state && scheme.state !== 'ALL' ? `Exclusive to ${scheme.state}` : 'Open to All Indian States'}
+                                    </span>
                                 </div>
                                 <h2 class="fw-bold mb-2">${scheme.schemeName}</h2>
                                 <p class="text-primary fw-semibold mb-3"><i class="bi bi-building me-1"></i> ${scheme.department}</p>

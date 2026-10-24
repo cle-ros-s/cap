@@ -31,5 +31,7 @@ public class UserProfileDto {
     private Boolean disabilityStatus;
     private Boolean farmerStatus;
     private Boolean entrepreneurStatus;
+    private String aadhaarNumber;
+    private Boolean aadhaarVerified;
     private Integer profileCompletionPercentage;
 }

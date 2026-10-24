@@ -164,9 +164,39 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Scheme Type</label>
                                 <select id="schemeType" class="form-select">
-                                    <option value="CENTRAL">CENTRAL SCHEME</option>
-                                    <option value="STATE">STATE SCHEME</option>
+                                    <option value="CENTRAL">CENTRAL SCHEME (All India)</option>
+                                    <option value="STATE">STATE SCHEME (Specific State)</option>
                                 </select>
+                            </div>
+                            <div class="col-12" id="schemeStateContainer">
+                                <label class="form-label fw-bold d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-geo-alt-fill me-1 text-primary"></i>State Applicability</span>
+                                    <span class="badge bg-primary text-white" id="stateModeBadge">All India (Central Scheme)</span>
+                                </label>
+                                <select id="schemeState" class="form-select border-primary">
+                                    <option value="ALL">All India (Visible to all state citizens)</option>
+                                    <option disabled>────────── Select State if State Scheme ──────────</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Delhi">Delhi (NCT)</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Assam">Assam</option>
+                                </select>
+                                <div class="form-text small text-muted mt-1" id="schemeStateHelp">
+                                    <i class="bi bi-info-circle me-1 text-primary"></i> <strong>CENTRAL SCHEME:</strong> Automatically visible to all citizens across all states. If you change to <strong>STATE SCHEME</strong>, select the target state so it only shows for that state.
+                                </div>
                             </div>
                             <div class="col-12">
                                 <label class="form-label fw-bold">Short Summary</label>
@@ -229,11 +259,24 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small">State Requirement</label>
                                 <select id="ruleState" class="form-select">
-                                    <option value="ALL">ALL (All India)</option>
+                                    <option value="ALL">ALL (All India - Open to all states)</option>
                                     <option value="Tamil Nadu">Tamil Nadu</option>
                                     <option value="Maharashtra">Maharashtra</option>
                                     <option value="Karnataka">Karnataka</option>
-                                    <option value="Delhi">Delhi</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Delhi">Delhi (NCT)</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Assam">Assam</option>
                                 </select>
                             </div>
                             <div class="col-md-6">

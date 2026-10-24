@@ -26,6 +26,14 @@ public class User {
     @Column(nullable = false, unique = true, length = 15)
     private String mobile;
 
+    @Column(name = "aadhaar_number", length = 20)
+    private String aadhaarNumber;
+
+    @Column(name = "aadhaar_verified")
+    @Builder.Default
+    private Boolean aadhaarVerified = false;
+
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @Column(nullable = false)
     private String password;
 

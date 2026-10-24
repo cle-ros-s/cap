@@ -14,6 +14,7 @@ public interface SchemeRepository extends JpaRepository<Scheme, Long> {
     List<Scheme> findByStatus(Status status);
     List<Scheme> findByCategoryIdAndStatus(Long categoryId, Status status);
     List<Scheme> findBySchemeTypeAndStatus(String schemeType, Status status);
+    boolean existsBySchemeName(String schemeName);
 
     @Query("SELECT s FROM Scheme s WHERE s.status = :status AND " +
            "(LOWER(s.schemeName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

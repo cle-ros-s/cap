@@ -39,10 +39,23 @@ public class SchemeServiceImpl implements SchemeService {
     @Override
     @Transactional(readOnly = true)
     public List<SchemeDto> getAllActiveSchemes(String userEmail) {
+        return getAllActiveSchemes(null, userEmail);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchemeDto> getAllActiveSchemes(String state, String userEmail) {
         Long userId = getUserIdFromEmail(userEmail);
         return schemeRepository.findByStatus(Status.ACTIVE).stream()
+                .filter(scheme -> matchesState(scheme, state))
                 .map(scheme -> mapToSchemeDto(scheme, userId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchemeDto> getSchemesByState(String state, String userEmail) {
+        return getAllActiveSchemes(state, userEmail);
     }
 
     @Override
@@ -65,8 +78,15 @@ public class SchemeServiceImpl implements SchemeService {
     @Override
     @Transactional(readOnly = true)
     public List<SchemeDto> getSchemesByCategory(Long categoryId, String userEmail) {
+        return getSchemesByCategory(categoryId, null, userEmail);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchemeDto> getSchemesByCategory(Long categoryId, String state, String userEmail) {
         Long userId = getUserIdFromEmail(userEmail);
         return schemeRepository.findByCategoryIdAndStatus(categoryId, Status.ACTIVE).stream()
+                .filter(scheme -> matchesState(scheme, state))
                 .map(scheme -> mapToSchemeDto(scheme, userId))
                 .collect(Collectors.toList());
     }
@@ -74,13 +94,44 @@ public class SchemeServiceImpl implements SchemeService {
     @Override
     @Transactional(readOnly = true)
     public List<SchemeDto> searchSchemes(String query, String userEmail) {
+        return searchSchemes(query, null, userEmail);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchemeDto> searchSchemes(String query, String state, String userEmail) {
         Long userId = getUserIdFromEmail(userEmail);
         if (query == null || query.trim().isEmpty()) {
-            return getAllActiveSchemes(userEmail);
+            return getAllActiveSchemes(state, userEmail);
         }
         return schemeRepository.searchSchemes(query.trim(), Status.ACTIVE).stream()
+                .filter(scheme -> matchesState(scheme, state))
                 .map(scheme -> mapToSchemeDto(scheme, userId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getAvailableStates() {
+        return schemeRepository.findByStatus(Status.ACTIVE).stream()
+                .map(s -> s.getEligibilityRule() != null ? s.getEligibilityRule().getState() : null)
+                .filter(st -> st != null && !st.isBlank() && !"ALL".equalsIgnoreCase(st))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    private boolean matchesState(Scheme scheme, String state) {
+        if (state == null || state.isBlank() || "ALL".equalsIgnoreCase(state) || "All India".equalsIgnoreCase(state)) {
+            return true;
+        }
+        EligibilityRule rule = scheme.getEligibilityRule();
+        boolean isCentral = "CENTRAL".equalsIgnoreCase(scheme.getSchemeType()) ||
+                rule == null ||
+                rule.getState() == null ||
+                "ALL".equalsIgnoreCase(rule.getState());
+        boolean isMatchingState = rule != null && rule.getState() != null && rule.getState().equalsIgnoreCase(state.trim());
+        return isCentral || isMatchingState;
     }
 
     @Override
@@ -161,13 +212,14 @@ public class SchemeServiceImpl implements SchemeService {
         SchemeCategory category = categoryRepository.findById(schemeDto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + schemeDto.getCategoryId()));
 
+        String schemeType = schemeDto.getSchemeType() != null ? schemeDto.getSchemeType().toUpperCase() : "CENTRAL";
         Scheme scheme = Scheme.builder()
                 .category(category)
                 .schemeName(schemeDto.getSchemeName())
                 .shortDescription(schemeDto.getShortDescription())
-                .description(schemeDto.getDescription())
+                .description(schemeDto.getDescription() != null ? schemeDto.getDescription() : schemeDto.getShortDescription())
                 .department(schemeDto.getDepartment())
-                .schemeType(schemeDto.getSchemeType() != null ? schemeDto.getSchemeType() : "CENTRAL")
+                .schemeType(schemeType)
                 .benefits(schemeDto.getBenefits())
                 .applicationUrl(schemeDto.getApplicationUrl())
                 .contactInformation(schemeDto.getContactInformation())
@@ -176,10 +228,24 @@ public class SchemeServiceImpl implements SchemeService {
 
         scheme = schemeRepository.save(scheme);
 
-        // If rule provided in payload, attach it
-        if (schemeDto.getEligibilityRule() != null) {
-            saveOrUpdateEligibilityRule(scheme.getId(), schemeDto.getEligibilityRule());
+        // Configure eligibility rule and state:
+        // If CENTRAL: visible to all state persons (state = "ALL")
+        // If STATE: specific to the specified state (e.g. "Tamil Nadu")
+        EligibilityRuleDto ruleDto = schemeDto.getEligibilityRule();
+        if (ruleDto == null) {
+            ruleDto = new EligibilityRuleDto();
         }
+
+        String stateVal = "ALL";
+        if ("STATE".equalsIgnoreCase(schemeType)) {
+            if (schemeDto.getState() != null && !schemeDto.getState().isBlank() && !"ALL".equalsIgnoreCase(schemeDto.getState())) {
+                stateVal = schemeDto.getState().trim();
+            } else if (ruleDto.getState() != null && !ruleDto.getState().isBlank()) {
+                stateVal = ruleDto.getState().trim();
+            }
+        }
+        ruleDto.setState(stateVal);
+        saveOrUpdateEligibilityRule(scheme.getId(), ruleDto);
 
         return mapToSchemeDto(scheme, null);
     }
@@ -200,7 +266,7 @@ public class SchemeServiceImpl implements SchemeService {
         scheme.setShortDescription(schemeDto.getShortDescription());
         scheme.setDescription(schemeDto.getDescription());
         scheme.setDepartment(schemeDto.getDepartment());
-        if (schemeDto.getSchemeType() != null) scheme.setSchemeType(schemeDto.getSchemeType());
+        if (schemeDto.getSchemeType() != null) scheme.setSchemeType(schemeDto.getSchemeType().toUpperCase());
         scheme.setBenefits(schemeDto.getBenefits());
         scheme.setApplicationUrl(schemeDto.getApplicationUrl());
         scheme.setContactInformation(schemeDto.getContactInformation());
@@ -210,6 +276,13 @@ public class SchemeServiceImpl implements SchemeService {
 
         if (schemeDto.getEligibilityRule() != null) {
             saveOrUpdateEligibilityRule(scheme.getId(), schemeDto.getEligibilityRule());
+        } else if (schemeDto.getState() != null) {
+            EligibilityRule rule = scheme.getEligibilityRule();
+            if (rule != null) {
+                String stateVal = "CENTRAL".equalsIgnoreCase(scheme.getSchemeType()) ? "ALL" : schemeDto.getState().trim();
+                rule.setState(stateVal);
+                ruleRepository.save(rule);
+            }
         }
 
         return mapToSchemeDto(scheme, null);
@@ -248,6 +321,14 @@ public class SchemeServiceImpl implements SchemeService {
 
         rule = ruleRepository.save(rule);
         scheme.setEligibilityRule(rule);
+        if (rule.getState() != null && !rule.getState().isBlank()) {
+            if ("ALL".equalsIgnoreCase(rule.getState())) {
+                scheme.setSchemeType("CENTRAL");
+            } else {
+                scheme.setSchemeType("STATE");
+            }
+            schemeRepository.save(scheme);
+        }
 
         return mapToEligibilityRuleDto(rule);
     }
@@ -350,6 +431,7 @@ public class SchemeServiceImpl implements SchemeService {
                 .description(scheme.getDescription())
                 .department(scheme.getDepartment())
                 .schemeType(scheme.getSchemeType())
+                .state(scheme.getEligibilityRule() != null && scheme.getEligibilityRule().getState() != null ? scheme.getEligibilityRule().getState() : "ALL")
                 .benefits(scheme.getBenefits())
                 .applicationUrl(scheme.getApplicationUrl())
                 .contactInformation(scheme.getContactInformation())

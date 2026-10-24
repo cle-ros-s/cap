@@ -22,6 +22,9 @@ public class UserProfile {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @Column(name = "aadhaar_number", length = 20)
+    private String aadhaarNumber;
+
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 

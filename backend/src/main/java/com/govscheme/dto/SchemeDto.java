@@ -22,6 +22,7 @@ public class SchemeDto {
     private String description;
     private String department;
     private String schemeType;
+    private String state;
     private String benefits;
     private String applicationUrl;
     private String contactInformation;

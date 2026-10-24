@@ -7,10 +7,15 @@ import java.util.List;
 
 public interface SchemeService {
     List<SchemeDto> getAllActiveSchemes(String userEmail);
+    List<SchemeDto> getAllActiveSchemes(String state, String userEmail);
+    List<SchemeDto> getSchemesByState(String state, String userEmail);
     List<SchemeDto> getAllSchemesAdmin();
     SchemeDto getSchemeById(Long id, String userEmail);
     List<SchemeDto> getSchemesByCategory(Long categoryId, String userEmail);
+    List<SchemeDto> getSchemesByCategory(Long categoryId, String state, String userEmail);
     List<SchemeDto> searchSchemes(String query, String userEmail);
+    List<SchemeDto> searchSchemes(String query, String state, String userEmail);
+    List<String> getAvailableStates();
 
     List<SchemeCategoryDto> getAllCategories();
     SchemeCategoryDto createCategory(SchemeCategoryDto categoryDto);

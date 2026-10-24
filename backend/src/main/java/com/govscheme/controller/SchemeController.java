@@ -19,9 +19,19 @@ public class SchemeController {
     private SchemeService schemeService;
 
     @GetMapping
-    public ResponseEntity<List<SchemeDto>> getAllActiveSchemes(Authentication authentication) {
+    public ResponseEntity<List<SchemeDto>> getAllActiveSchemes(
+            @RequestParam(value = "state", required = false) String state,
+            Authentication authentication) {
         String email = authentication != null ? authentication.getName() : null;
-        return ResponseEntity.ok(schemeService.getAllActiveSchemes(email));
+        return ResponseEntity.ok(schemeService.getAllActiveSchemes(state, email));
+    }
+
+    @GetMapping("/state/{state}")
+    public ResponseEntity<List<SchemeDto>> getSchemesByState(
+            @PathVariable String state,
+            Authentication authentication) {
+        String email = authentication != null ? authentication.getName() : null;
+        return ResponseEntity.ok(schemeService.getSchemesByState(state, email));
     }
 
     @GetMapping("/{id}")
@@ -31,19 +41,30 @@ public class SchemeController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<SchemeDto>> getSchemesByCategory(@PathVariable Long categoryId, Authentication authentication) {
+    public ResponseEntity<List<SchemeDto>> getSchemesByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(value = "state", required = false) String state,
+            Authentication authentication) {
         String email = authentication != null ? authentication.getName() : null;
-        return ResponseEntity.ok(schemeService.getSchemesByCategory(categoryId, email));
+        return ResponseEntity.ok(schemeService.getSchemesByCategory(categoryId, state, email));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<SchemeDto>> searchSchemes(@RequestParam(value = "query", required = false) String query, Authentication authentication) {
+    public ResponseEntity<List<SchemeDto>> searchSchemes(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "state", required = false) String state,
+            Authentication authentication) {
         String email = authentication != null ? authentication.getName() : null;
-        return ResponseEntity.ok(schemeService.searchSchemes(query, email));
+        return ResponseEntity.ok(schemeService.searchSchemes(query, state, email));
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<SchemeCategoryDto>> getAllCategories() {
         return ResponseEntity.ok(schemeService.getAllCategories());
+    }
+
+    @GetMapping("/states")
+    public ResponseEntity<List<String>> getAvailableStates() {
+        return ResponseEntity.ok(schemeService.getAvailableStates());
     }
 }

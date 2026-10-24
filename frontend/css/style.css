@@ -437,3 +437,33 @@ a:hover {
     padding: 3rem 0 4rem 0;
   }
 }
+
+/* Aadhaar & OTP Component Styles */
+.aadhaar-card-box {
+  background: #fbfcfe;
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.aadhaar-card-box:focus-within {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.08);
+}
+
+.aadhaar-card-box.is-verified {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+}
+
+.letter-spacing-otp {
+  letter-spacing: 0.35rem;
+  font-family: 'Courier New', Courier, monospace, var(--font-primary);
+}
+
+.aadhaar-verified-input {
+  background-color: #f0fdf4 !important;
+  border-color: #22c55e !important;
+  color: #15803d !important;
+  font-weight: 600;
+}
+

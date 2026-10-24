@@ -18,5 +18,7 @@ public class UserSummaryDto {
     private String mobile;
     private String role;
     private String status;
+    private String aadhaarNumber;
+    private Boolean aadhaarVerified;
     private LocalDateTime createdAt;
 }

@@ -47,7 +47,10 @@ async function loadUsersTable() {
                     <div class="fw-bold">${u.name}</div>
                     <div class="small text-muted">${u.email}</div>
                 </td>
-                <td>${u.mobile}</td>
+                <td>
+                    <div>${u.mobile}</div>
+                    ${u.aadhaarNumber ? `<span class="badge bg-light text-success border border-success-subtle font-monospace small"><i class="bi bi-shield-check me-1"></i>${u.aadhaarNumber.length === 12 ? '•••• ' + u.aadhaarNumber.slice(-4) : u.aadhaarNumber}</span>` : '<span class="text-muted small">No Aadhaar</span>'}
+                </td>
                 <td><span class="badge ${u.role === 'ROLE_ADMIN' ? 'bg-purple' : 'bg-secondary'}">${u.role.replace('ROLE_', '')}</span></td>
                 <td>
                     <span class="badge ${u.status === 'ACTIVE' ? 'bg-success' : 'bg-danger'}">${u.status}</span>
@@ -88,7 +91,12 @@ async function loadAdminSchemesTable() {
             return;
         }
 
-        tbody.innerHTML = schemes.map(s => `
+        tbody.innerHTML = schemes.map(s => {
+            const isState = s.schemeType === 'STATE';
+            const stateName = (s.state && s.state !== 'ALL') ? s.state : 
+                              (s.eligibilityRule && s.eligibilityRule.state && s.eligibilityRule.state !== 'ALL' ? s.eligibilityRule.state : null);
+
+            return `
             <tr>
                 <td class="fw-bold">#${s.id}</td>
                 <td>
@@ -96,7 +104,11 @@ async function loadAdminSchemesTable() {
                     <div class="small text-muted">${s.department}</div>
                 </td>
                 <td><span class="badge-category">${s.categoryName}</span></td>
-                <td><span class="${s.schemeType === 'STATE' ? 'badge-state' : 'badge-central'}">${s.schemeType}</span></td>
+                <td>
+                    ${isState 
+                        ? `<span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1 small fw-bold"><i class="bi bi-geo-alt-fill text-warning me-1"></i>${stateName ? stateName : 'STATE'}</span>` 
+                        : `<span class="badge bg-primary-subtle text-primary border border-primary px-2 py-1 small fw-bold"><i class="bi bi-globe me-1"></i>CENTRAL (All States)</span>`}
+                </td>
                 <td>
                     ${s.eligibilityRule ? `
                         <span class="badge bg-success-subtle text-success border border-success px-2 py-1 small">
@@ -119,7 +131,7 @@ async function loadAdminSchemesTable() {
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `;}).join('');
     } catch (err) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-3">${err.message}</td></tr>`;
     }
@@ -139,6 +151,56 @@ async function loadCategoriesDropdown() {
 }
 
 function setupAdminFormListeners() {
+    const schemeTypeSelect = document.getElementById('schemeType');
+    const schemeStateSelect = document.getElementById('schemeState');
+    const stateBadge = document.getElementById('stateModeBadge');
+    const stateHelp = document.getElementById('schemeStateHelp');
+
+    function syncSchemeTypeAndState() {
+        if (!schemeTypeSelect || !schemeStateSelect) return;
+        const type = schemeTypeSelect.value;
+        if (type === 'CENTRAL') {
+            schemeStateSelect.value = 'ALL';
+            if (stateBadge) {
+                stateBadge.className = 'badge bg-primary text-white';
+                stateBadge.innerHTML = '<i class="bi bi-globe me-1"></i>All India (Central Scheme)';
+            }
+            if (stateHelp) {
+                stateHelp.innerHTML = '<i class="bi bi-info-circle me-1 text-primary"></i> <strong>CENTRAL SCHEME:</strong> Automatically visible to all citizens across all states and union territories.';
+            }
+            schemeStateSelect.classList.remove('border-warning');
+            schemeStateSelect.classList.add('border-primary');
+        } else {
+            if (schemeStateSelect.value === 'ALL') {
+                schemeStateSelect.value = 'Tamil Nadu';
+            }
+            if (stateBadge) {
+                stateBadge.className = 'badge bg-warning text-dark';
+                stateBadge.innerHTML = '<i class="bi bi-geo-alt-fill me-1"></i>Specific State Scheme';
+            }
+            if (stateHelp) {
+                stateHelp.innerHTML = '<i class="bi bi-info-circle me-1 text-warning"></i> <strong>STATE SCHEME:</strong> This scheme will only be visible and recommended to citizens from this specific state.';
+            }
+            schemeStateSelect.classList.remove('border-primary');
+            schemeStateSelect.classList.add('border-warning');
+        }
+    }
+
+    if (schemeTypeSelect) {
+        schemeTypeSelect.addEventListener('change', syncSchemeTypeAndState);
+    }
+
+    if (schemeStateSelect) {
+        schemeStateSelect.addEventListener('change', () => {
+            if (schemeStateSelect.value === 'ALL') {
+                if (schemeTypeSelect) schemeTypeSelect.value = 'CENTRAL';
+            } else {
+                if (schemeTypeSelect) schemeTypeSelect.value = 'STATE';
+            }
+            syncSchemeTypeAndState();
+        });
+    }
+
     const schemeForm = document.getElementById('createSchemeForm');
     if (schemeForm) {
         schemeForm.addEventListener('submit', async (e) => {
@@ -147,6 +209,8 @@ function setupAdminFormListeners() {
             const schemeName = document.getElementById('schemeName').value.trim();
             const department = document.getElementById('schemeDepartment').value.trim();
             const schemeType = document.getElementById('schemeType').value;
+            const schemeStateEl = document.getElementById('schemeState');
+            const state = schemeType === 'CENTRAL' ? 'ALL' : (schemeStateEl ? schemeStateEl.value : 'ALL');
             const shortDescription = document.getElementById('schemeShortDesc').value.trim();
             const benefits = document.getElementById('schemeBenefits').value.trim();
             const applicationUrl = document.getElementById('schemeAppUrl').value.trim();
@@ -159,6 +223,7 @@ function setupAdminFormListeners() {
                         schemeName,
                         department,
                         schemeType,
+                        state,
                         shortDescription,
                         benefits,
                         applicationUrl,
@@ -171,6 +236,7 @@ function setupAdminFormListeners() {
                 const modal = bootstrap.Modal.getInstance(document.getElementById('addSchemeModal'));
                 if (modal) modal.hide();
                 schemeForm.reset();
+                syncSchemeTypeAndState();
                 loadAdminSchemesTable();
                 loadAdminStats();
             } catch (err) {

@@ -1,17 +1,34 @@
 /**
- * Government Scheme Recommendation System - Recommendation Engine JS
- * Handles rule-based profile evaluation and transparent criteria breakdown rendering.
+ * Safely escapes HTML strings to prevent XSS and rendering errors
  */
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const profileForm = document.getElementById('eligibilityForm');
     if (!profileForm) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramState = urlParams.get('state');
+    if (paramState && document.getElementById('state')) {
+        document.getElementById('state').value = paramState;
+    }
 
     // Load saved user profile if logged in
     if (isLoggedIn()) {
         try {
             const profile = await apiFetch('/user/profile');
             populateFormFields(profile);
+            if (paramState && document.getElementById('state')) {
+                document.getElementById('state').value = paramState;
+            }
             // Auto run recommendation on load if profile is complete
             if (profile.age || profile.annualIncome || profile.state) {
                 runRecommendationEngine(getProfilePayloadFromForm());
@@ -19,6 +36,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (err) {
             console.log('User profile fetch notice:', err.message);
         }
+    } else if (paramState) {
+        // If state is preselected from URL, pre-fill and run if user has minimal default
+        // or wait for submit
     }
 
     profileForm.addEventListener('submit', (e) => {
@@ -112,7 +132,19 @@ function renderRecommendationResults(results) {
     const eligibleSchemes = results.filter(r => r.eligible);
     const ineligibleSchemes = results.filter(r => !r.eligible);
 
+    const selectedState = document.getElementById('state') ? document.getElementById('state').value : '';
+    const stateScopeHtml = (selectedState && selectedState !== 'ALL') ? `
+        <div class="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 p-3 rounded-3 mb-4 d-flex align-items-center gap-3">
+            <div class="bg-primary text-white p-2 rounded-circle"><i class="bi bi-geo-alt-fill fs-5"></i></div>
+            <div>
+                <h6 class="fw-bold mb-1 text-primary">State Scope: Central Government + ${escapeHtml(selectedState)} State Schemes</h6>
+                <p class="mb-0 text-secondary small">Evaluated all national Central Government welfare programs plus schemes exclusive to residents of <strong>${escapeHtml(selectedState)}</strong>. Schemes from other states are excluded.</p>
+            </div>
+        </div>
+    ` : '';
+
     let html = `
+        ${stateScopeHtml}
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
             <div>
                 <h3 class="fw-bold m-0">Recommendation Engine Output</h3>
@@ -154,6 +186,12 @@ function renderSchemeEvaluationCard(item) {
     const cardClass = isEligible ? 'result-card-eligible' : 'result-card-ineligible';
     const badgeClass = isEligible ? 'match-score-eligible' : 'match-score-ineligible';
 
+    const isStateScheme = scheme.schemeType === 'STATE';
+    const stateLabel = scheme.state && scheme.state !== 'ALL' ? scheme.state : (isStateScheme ? 'State Govt' : 'Central Govt');
+    const badgeHtml = isStateScheme ?
+        `<span class="badge bg-warning text-dark px-2 py-1 ms-2"><i class="bi bi-geo-alt-fill me-1"></i>${escapeHtml(stateLabel)} State Govt</span>` :
+        `<span class="badge bg-primary px-2 py-1 ms-2"><i class="bi bi-flag-fill me-1"></i>Central Govt Scheme</span>`;
+
     let criteriaHtml = '';
     item.criteriaBreakdown.forEach(c => {
         const passClass = c.satisfied ? 'criterion-pass' : 'criterion-fail';
@@ -164,10 +202,10 @@ function renderSchemeEvaluationCard(item) {
                 <i class="bi ${iconClass} criterion-icon"></i>
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between font-weight-bold fw-bold">
-                        <span>${c.criterionName}</span>
-                        <span class="small opacity-75">Required: ${c.expectedValue}</span>
+                        <span>${escapeHtml(c.criterionName)}</span>
+                        <span class="small opacity-75">Required: ${escapeHtml(c.expectedValue)}</span>
                     </div>
-                    <div class="mt-1 small">${c.explanation}</div>
+                    <div class="mt-1 small">${escapeHtml(c.explanation)}</div>
                 </div>
             </div>
         `;
@@ -181,10 +219,10 @@ function renderSchemeEvaluationCard(item) {
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3 flex-wrap">
                         <div>
-                            <span class="badge-category mb-2">${scheme.categoryName}</span>
-                            <span class="${scheme.schemeType === 'STATE' ? 'badge-state' : 'badge-central'} ms-2">${scheme.schemeType} SCHEME</span>
-                            <h4 class="fw-bold mt-1 mb-2">${scheme.schemeName}</h4>
-                            <p class="text-muted small mb-0"><i class="bi bi-building me-1"></i> ${scheme.department}</p>
+                            <span class="badge-category mb-2">${escapeHtml(scheme.categoryName)}</span>
+                            ${badgeHtml}
+                            <h4 class="fw-bold mt-2 mb-2">${escapeHtml(scheme.schemeName)}</h4>
+                            <p class="text-muted small mb-0"><i class="bi bi-building me-1"></i> ${escapeHtml(scheme.department)}</p>
                         </div>
                         <div class="text-end">
                             <span class="match-score-badge ${badgeClass} d-inline-block">
